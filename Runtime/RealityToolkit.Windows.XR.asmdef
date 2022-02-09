@@ -1,0 +1,17 @@
+{
+    "name": "RealityToolkit.Windows.XR",
+    "rootNamespace": "RealityToolkit.Windows.XR",
+    "references": [],
+    "includePlatforms": [
+        "Editor",
+        "WSA"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
