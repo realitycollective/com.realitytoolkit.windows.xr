@@ -2,8 +2,6 @@
   "name": "com.realitytoolkit.windows.xr",
   "displayName": "RealityToolkit.Windows.XR",
   "description": "The Windows XR platform module for the Reality Toolkit.",
-  "version": "1.0.0-preview.1",
-  "unity": "2020.3",
   "keywords": [
     "vr",
     "ar",
@@ -14,9 +12,11 @@
     "unity",
     "windows"
   ],
+  "version": "0.1.0-preview",
+  "unity": "2020.2",  
   "homepage": "https://github.com/realitycollective",
   "bugs": {
-    "url": "https://github.com/realitycollective/com.realitytoolkit.windows.xr/issues"
+    "url": "https://github.com/realitycollective/realitytoolkit.dev/issues"
   },
   "license": "MIT",
   "repository": {
@@ -29,7 +29,7 @@
     "url": "https://github.com/realitycollective"
   },
   "dependencies": {
-    "com.realitytoolkit.core": "0.3.0-preview.57",
+    "com.realitytoolkit.core": "0.1.0-preview",
     "com.microsoft.mixedreality.openxr": "1.2.1"
   },
   "profiles": [
