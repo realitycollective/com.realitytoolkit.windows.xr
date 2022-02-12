@@ -2,6 +2,8 @@
     "name": "RealityToolkit.Windows.XR.Editor",
     "rootNamespace": "RealityToolkit.Windows.XR.Editor",
     "references": [
+        "GUID:f3241d040533491e8a1e2714b27c3111",
+        "GUID:e67d30660ec243e4836aac191d3f36fb",
         "GUID:d30d253f39adba4408fc5b5bad84a77b"
     ],
     "includePlatforms": [
