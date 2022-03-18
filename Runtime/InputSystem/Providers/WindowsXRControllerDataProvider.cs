@@ -31,7 +31,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
         /// <inheritdoc />
         public override void Update()
         {
-            if (InputDevices.GetDeviceAtXRNode(XRNode.LeftHand) != default && TryGetController(Handedness.Left, out var leftController))
+            if (InputDevices.GetDeviceAtXRNode(XRNode.LeftHand) != default && TryGetOrAddController(Handedness.Left, out var leftController))
             {
                 leftController.UpdateController();
             }
@@ -40,7 +40,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
                 RemoveController(Handedness.Left);
             }
 
-            if (InputDevices.GetDeviceAtXRNode(XRNode.RightHand) != default && TryGetController(Handedness.Left, out var rightController))
+            if (InputDevices.GetDeviceAtXRNode(XRNode.RightHand) != default && TryGetOrAddController(Handedness.Right, out var rightController))
             {
                 rightController.UpdateController();
             }
