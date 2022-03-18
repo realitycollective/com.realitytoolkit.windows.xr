@@ -3,7 +3,7 @@
 
 using XRTK.Definitions.Controllers;
 using XRTK.Definitions.Utilities;
-using XRTK.Providers.Controllers.Hands;
+using XRTK.Providers.Controllers.UnityXR;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Profiles
 {
@@ -17,8 +17,8 @@ namespace RealityToolkit.Windows.XR.InputSystem.Profiles
         {
             return new[]
             {
-                new ControllerDefinition(typeof(MixedRealityHandController), Handedness.Left),
-                new ControllerDefinition(typeof(MixedRealityHandController), Handedness.Right)
+                new ControllerDefinition(typeof(UnityXRHandController), Handedness.Left),
+                new ControllerDefinition(typeof(UnityXRHandController), Handedness.Right)
             };
         }
     }
