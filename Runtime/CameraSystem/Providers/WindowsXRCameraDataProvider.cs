@@ -5,7 +5,7 @@ using RealityToolkit.Windows.XR.CameraSystem.Profiles;
 using UnityEngine;
 using XRTK.Attributes;
 using XRTK.Interfaces.CameraSystem;
-using XRTK.Providers.CameraSystem;
+using XRTK.Services.CameraSystem.Providers;
 
 namespace RealityToolkit.Windows.XR.CameraSystem.Providers
 {

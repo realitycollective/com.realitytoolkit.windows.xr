@@ -5,7 +5,7 @@ using RealityToolkit.Windows.XR.InputSystem.Profiles;
 using UnityEngine;
 using XRTK.Attributes;
 using XRTK.Interfaces.InputSystem;
-using XRTK.Providers.Controllers;
+using XRTK.Services.InputSystem.Controllers;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Providers
 {
