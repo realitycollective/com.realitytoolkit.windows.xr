@@ -3,7 +3,7 @@
 
 using XRTK.Definitions.Controllers;
 using XRTK.Definitions.Utilities;
-using XRTK.Providers.Controllers.UnityXR;
+using XRTK.Services.InputSystem.Controllers.UnityXR;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Profiles
 {
