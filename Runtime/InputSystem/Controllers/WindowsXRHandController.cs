@@ -5,7 +5,7 @@ using XRTK.Definitions.Controllers;
 using XRTK.Definitions.Devices;
 using XRTK.Definitions.Utilities;
 using XRTK.Interfaces.InputSystem.Providers.Controllers;
-using XRTK.Services.InputSystem.Controllers.UnityXR;
+using RealityToolkit.Services.InputSystem.Controllers.UnityXR;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 {
@@ -19,7 +19,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
         public WindowsXRHandController(IMixedRealityControllerDataProvider controllerDataProvider, TrackingState trackingState, Handedness controllerHandedness, MixedRealityControllerMappingProfile controllerMappingProfile)
             : base(controllerDataProvider, trackingState, controllerHandedness, controllerMappingProfile)
         {
-            handJointDataProvider = new WindowsXRHandJointDataProvider();
+            handJointDataProvider = new WindowsXRHandJointDataProvider(controllerHandedness);
             handMeshDataProvider = new WindowsXRHandMeshDataProvider();
         }
     }

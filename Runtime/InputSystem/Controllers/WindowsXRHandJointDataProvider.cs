@@ -2,8 +2,17 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.OpenXR;
+using RealityToolkit.Interfaces.InputSystem.Providers.Controllers.Hands;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.XR;
 using XRTK.Definitions.Controllers.Hands;
-using XRTK.Interfaces.InputSystem.Providers.Controllers.Hands;
+using XRTK.Definitions.Utilities;
+using XRTK.Extensions;
+using XRTK.Interfaces.CameraSystem;
+using XRTK.Services;
+using XRTK.Utilities;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 {
@@ -12,6 +21,38 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     /// </summary>
     public sealed class WindowsXRHandJointDataProvider : IUnityXRHandJointDataProvider
     {
+        public WindowsXRHandJointDataProvider(XRTK.Definitions.Utilities.Handedness handedness)
+        {
+            handTracker = handedness == XRTK.Definitions.Utilities.Handedness.Left ? HandTracker.Left : HandTracker.Right;
+        }
+
+        private static readonly HandJoint[] handJoints = Enum.GetValues(typeof(HandJoint)) as HandJoint[];
+        private readonly HandTracker handTracker = null;
+        private readonly HandJointLocation[] locations = new HandJointLocation[HandTracker.JointCount];
+        private Transform cameraRigTransform;
+
+        /// <inheritdoc />
+        public void UpdateHandJoints(InputDevice inputDevice, Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses)
+        {
+            if (cameraRigTransform.IsNull())
+            {
+                FindCameraRig();
+            }
+
+            if (handTracker != null && handTracker.TryLocateHandJoints(FrameTime.OnUpdate, locations))
+            {
+                foreach (var handJoint in handJoints)
+                {
+                    var handJointLocation = locations[(int)handJoint];
+
+                    var position = cameraRigTransform.TransformPoint(handJointLocation.Pose.position);
+                    var rotation = cameraRigTransform.rotation * handJointLocation.Pose.rotation;
+
+                    jointPoses[ConvertToTrackedHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
+                }
+            }
+        }
+
         private TrackedHandJoint ConvertToTrackedHandJoint(HandJoint handJoint)
         {
             switch (handJoint)
@@ -49,6 +90,20 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                 case HandJoint.LittleTip: return TrackedHandJoint.LittleTip;
 
                 default: return TrackedHandJoint.None;
+            }
+        }
+
+        private void FindCameraRig()
+        {
+            if (MixedRealityToolkit.TryGetService<IMixedRealityCameraSystem>(out var cameraSystem))
+            {
+                cameraRigTransform = cameraSystem.MainCameraRig.RigTransform;
+            }
+            else
+            {
+                var cameraTransform = CameraCache.Main.transform;
+                Debug.Assert(cameraTransform.parent.IsNotNull(), "The camera must be parented.");
+                cameraRigTransform = CameraCache.Main.transform.parent;
             }
         }
     }
