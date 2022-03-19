@@ -1,9 +1,9 @@
 // Copyright (c) Reality Collective. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using RealityToolkit.Windows.XR.InputSystem.Controllers;
 using XRTK.Definitions.Controllers;
 using XRTK.Definitions.Utilities;
-using XRTK.Services.InputSystem.Controllers.UnityXR;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Profiles
 {
@@ -17,8 +17,8 @@ namespace RealityToolkit.Windows.XR.InputSystem.Profiles
         {
             return new[]
             {
-                new ControllerDefinition(typeof(UnityXRHandController), Handedness.Left),
-                new ControllerDefinition(typeof(UnityXRHandController), Handedness.Right)
+                new ControllerDefinition(typeof(WindowsXRHandController), Handedness.Left),
+                new ControllerDefinition(typeof(WindowsXRHandController), Handedness.Right)
             };
         }
     }

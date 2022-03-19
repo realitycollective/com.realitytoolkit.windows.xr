@@ -1,6 +1,7 @@
 // Copyright (c) Reality Collective. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using RealityToolkit.Windows.XR.InputSystem.Controllers;
 using RealityToolkit.Windows.XR.InputSystem.Profiles;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ using XRTK.Definitions.Devices;
 using XRTK.Definitions.Utilities;
 using XRTK.Interfaces.InputSystem;
 using XRTK.Services.InputSystem.Controllers;
-using XRTK.Services.InputSystem.Controllers.UnityXR;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Providers
 {
@@ -26,7 +26,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
         public WindowsXRControllerDataProvider(string name, uint priority, WindowsXRControllerDataProviderProfile profile, IMixedRealityInputSystem parentService)
             : base(name, priority, profile, parentService) { }
 
-        private readonly Dictionary<Handedness, UnityXRController> activeControllers = new Dictionary<Handedness, UnityXRController>();
+        private readonly Dictionary<Handedness, WindowsXRHandController> activeControllers = new Dictionary<Handedness, WindowsXRHandController>();
 
         /// <inheritdoc />
         public override void Update()
@@ -69,12 +69,12 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
             activeControllers.Clear();
         }
 
-        private bool TryGetController(Handedness handedness, out UnityXRController controller)
+        private bool TryGetController(Handedness handedness, out WindowsXRHandController controller)
         {
             if (activeControllers.ContainsKey(handedness))
             {
                 var existingController = activeControllers[handedness];
-                Debug.Assert(existingController != null, $"{nameof(UnityXRHandController)} {handedness} has been destroyed but remains in the active controller registry.");
+                Debug.Assert(existingController != null, $"{nameof(WindowsXRHandController)} {handedness} has been destroyed but remains in the active controller registry.");
                 controller = existingController;
                 return true;
             }
@@ -83,7 +83,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
             return false;
         }
 
-        private bool TryGetOrAddController(Handedness handedness, Type controllerType, out UnityXRController controller)
+        private bool TryGetOrAddController(Handedness handedness, Type controllerType, out WindowsXRHandController controller)
         {
             if (TryGetController(handedness, out controller))
             {
@@ -92,7 +92,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
 
             try
             {
-                controller = (UnityXRController)Activator.CreateInstance(controllerType, this, TrackingState.NotTracked, handedness, GetControllerMappingProfile(controllerType, handedness));
+                controller = (WindowsXRHandController)Activator.CreateInstance(controllerType, this, TrackingState.NotTracked, handedness, GetControllerMappingProfile(controllerType, handedness));
                 controller.TryRenderControllerModel();
                 AddController(controller);
                 activeControllers.Add(handedness, controller);
@@ -113,7 +113,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
         {
             if ((inputDevice.characteristics & InputDeviceCharacteristics.HandTracking) != 0)
             {
-                controllerType = typeof(UnityXRHandController);
+                controllerType = typeof(WindowsXRHandController);
                 return true;
             }
 
