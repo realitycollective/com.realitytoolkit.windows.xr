@@ -26,12 +26,15 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
         public WindowsXRControllerDataProvider(string name, uint priority, WindowsXRControllerDataProviderProfile profile, IMixedRealityInputSystem parentService)
             : base(name, priority, profile, parentService) { }
 
-        private readonly Dictionary<Handedness, UnityXRHandController> activeControllers = new Dictionary<Handedness, UnityXRHandController>();
+        private readonly Dictionary<Handedness, UnityXRController> activeControllers = new Dictionary<Handedness, UnityXRController>();
 
         /// <inheritdoc />
         public override void Update()
         {
-            if (InputDevices.GetDeviceAtXRNode(XRNode.LeftHand) != default && TryGetOrAddController(Handedness.Left, out var leftController))
+            var leftHandInputDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
+            if (leftHandInputDevice != default &&
+                TryGetControllerType(leftHandInputDevice, out var leftHandControllerType) &&
+                TryGetOrAddController(Handedness.Left, leftHandControllerType, out var leftController))
             {
                 leftController.UpdateController();
             }
@@ -40,7 +43,10 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
                 RemoveController(Handedness.Left);
             }
 
-            if (InputDevices.GetDeviceAtXRNode(XRNode.RightHand) != default && TryGetOrAddController(Handedness.Right, out var rightController))
+            var rightHandInputDevice = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+            if (rightHandInputDevice != default &&
+                TryGetControllerType(rightHandInputDevice, out var rightHandControllerType) &&
+                TryGetOrAddController(Handedness.Right, rightHandControllerType, out var rightController))
             {
                 rightController.UpdateController();
             }
@@ -63,7 +69,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
             activeControllers.Clear();
         }
 
-        private bool TryGetController(Handedness handedness, out UnityXRHandController controller)
+        private bool TryGetController(Handedness handedness, out UnityXRController controller)
         {
             if (activeControllers.ContainsKey(handedness))
             {
@@ -77,7 +83,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
             return false;
         }
 
-        private bool TryGetOrAddController(Handedness handedness, out UnityXRHandController controller)
+        private bool TryGetOrAddController(Handedness handedness, Type controllerType, out UnityXRController controller)
         {
             if (TryGetController(handedness, out controller))
             {
@@ -86,7 +92,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
 
             try
             {
-                controller = new UnityXRHandController(this, TrackingState.NotTracked, handedness, GetControllerMappingProfile(typeof(UnityXRHandController), handedness));
+                controller = (UnityXRController)Activator.CreateInstance(controllerType, this, TrackingState.NotTracked, handedness, GetControllerMappingProfile(controllerType, handedness));
                 controller.TryRenderControllerModel();
                 AddController(controller);
                 activeControllers.Add(handedness, controller);
@@ -96,11 +102,23 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to create {nameof(UnityXRHandController)}!");
+                Debug.LogError($"Failed to create {controllerType.Name}!");
                 Debug.LogException(ex);
                 controller = null;
                 return false;
             }
+        }
+
+        private bool TryGetControllerType(InputDevice inputDevice, out Type controllerType)
+        {
+            if ((inputDevice.characteristics & InputDeviceCharacteristics.HandTracking) != 0)
+            {
+                controllerType = typeof(UnityXRHandController);
+                return true;
+            }
+
+            controllerType = null;
+            return false;
         }
 
         private void RemoveController(Handedness handedness, bool removeFromRegistry = true)
