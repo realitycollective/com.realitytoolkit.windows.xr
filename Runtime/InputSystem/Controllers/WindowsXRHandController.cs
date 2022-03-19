@@ -20,7 +20,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
             : base(controllerDataProvider, trackingState, controllerHandedness, controllerMappingProfile)
         {
             handJointDataProvider = new WindowsXRHandJointDataProvider(controllerHandedness);
-            handMeshDataProvider = new WindowsXRHandMeshDataProvider();
+            handMeshDataProvider = new WindowsXRHandMeshDataProvider(controllerHandedness);
         }
     }
 }
