@@ -41,10 +41,10 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 
             if (handTracker != null && handTracker.TryLocateHandJoints(FrameTime.OnUpdate, locations))
             {
-                foreach (var handJoint in handJoints)
+                for (var i = 0; i < handJoints.Length; i++)
                 {
+                    var handJoint = handJoints[i];
                     var handJointLocation = locations[(int)handJoint];
-
                     var position = cameraRigTransform.TransformPoint(handJointLocation.Pose.position);
                     var rotation = cameraRigTransform.rotation * handJointLocation.Pose.rotation;
 
