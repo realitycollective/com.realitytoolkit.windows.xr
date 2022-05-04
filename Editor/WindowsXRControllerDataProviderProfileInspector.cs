@@ -3,7 +3,7 @@
 
 using RealityToolkit.Windows.XR.InputSystem.Profiles;
 using UnityEditor;
-using XRTK.Editor.Profiles.InputSystem.Controllers;
+using RealityToolkit.Editor.Profiles.InputSystem.Controllers;
 
 namespace RealityToolkit.Windows.XR.Editor
 {

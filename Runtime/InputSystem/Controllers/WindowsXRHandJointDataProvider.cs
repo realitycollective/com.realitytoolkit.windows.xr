@@ -7,12 +7,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-using XRTK.Definitions.Controllers.Hands;
-using XRTK.Definitions.Utilities;
-using XRTK.Extensions;
-using XRTK.Interfaces.CameraSystem;
-using XRTK.Services;
-using XRTK.Utilities;
+using RealityToolkit.Definitions.Controllers.Hands;
+using RealityToolkit.Definitions.Utilities;
+using RealityToolkit.Extensions;
+using RealityToolkit.Interfaces.CameraSystem;
+using RealityToolkit.Services;
+using RealityToolkit.Utilities;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 {
@@ -21,9 +21,9 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     /// </summary>
     public sealed class WindowsXRHandJointDataProvider : IUnityXRHandJointDataProvider
     {
-        public WindowsXRHandJointDataProvider(XRTK.Definitions.Utilities.Handedness handedness)
+        public WindowsXRHandJointDataProvider(RealityToolkit.Definitions.Utilities.Handedness handedness)
         {
-            handTracker = handedness == XRTK.Definitions.Utilities.Handedness.Left ? HandTracker.Left : HandTracker.Right;
+            handTracker = handedness == RealityToolkit.Definitions.Utilities.Handedness.Left ? HandTracker.Left : HandTracker.Right;
         }
 
         private static readonly HandJoint[] handJoints = Enum.GetValues(typeof(HandJoint)) as HandJoint[];

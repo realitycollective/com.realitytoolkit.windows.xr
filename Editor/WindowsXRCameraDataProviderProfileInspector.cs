@@ -3,7 +3,7 @@
 
 using RealityToolkit.Windows.XR.CameraSystem.Profiles;
 using UnityEditor;
-using XRTK.Editor.Profiles.CameraSystem;
+using RealityToolkit.Editor.Profiles.CameraSystem;
 
 namespace RealityToolkit.Windows.XR.Editor
 {

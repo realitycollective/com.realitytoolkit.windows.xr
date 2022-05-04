@@ -7,7 +7,7 @@ using RealityToolkit.Interfaces.InputSystem.Providers.Controllers.Hands;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-using XRTK.Definitions.Controllers.Hands;
+using RealityToolkit.Definitions.Controllers.Hands;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 {
@@ -16,9 +16,9 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     /// </summary>
     public sealed class WindowsXRHandMeshDataProvider : IUnityXRHandMeshDataProvider
     {
-        public WindowsXRHandMeshDataProvider(XRTK.Definitions.Utilities.Handedness handedness)
+        public WindowsXRHandMeshDataProvider(RealityToolkit.Definitions.Utilities.Handedness handedness)
         {
-            handMeshTracker = handedness == XRTK.Definitions.Utilities.Handedness.Left ? HandMeshTracker.Left : HandMeshTracker.Right;
+            handMeshTracker = handedness == RealityToolkit.Definitions.Utilities.Handedness.Left ? HandMeshTracker.Left : HandMeshTracker.Right;
         }
 
         private readonly HandMeshTracker handMeshTracker;
