@@ -23,8 +23,24 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     {
         public WindowsXRHandJointDataProvider(RealityToolkit.Definitions.Utilities.Handedness handedness)
         {
-            handTracker = handedness == RealityToolkit.Definitions.Utilities.Handedness.Left ? HandTracker.Left : HandTracker.Right;
+            handTracker = handedness == Definitions.Utilities.Handedness.Left
+                ? HandTracker.Left
+                : HandTracker.Right;
         }
+
+        ~WindowsXRHandJointDataProvider()
+        {
+            if (!conversionProxyRootTransform.IsNull())
+            {
+                conversionProxyTransforms.Clear();
+                conversionProxyRootTransform.Destroy();
+            }
+        }
+
+        private Transform conversionProxyRootTransform;
+
+        private readonly Dictionary<TrackedHandJoint, Transform> conversionProxyTransforms =
+            new Dictionary<TrackedHandJoint, Transform>();
 
         private static readonly HandJoint[] handJoints = Enum.GetValues(typeof(HandJoint)) as HandJoint[];
         private readonly HandTracker handTracker = null;
@@ -51,6 +67,51 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                     jointPoses[ConvertToTrackedHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
                 }
             }
+            
+            ConvertJointPoses(jointPoses, GetHandRootPose(jointPoses));
+        }
+        
+        private void ConvertJointPoses(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses, MixedRealityPose handRootPose)
+        {
+            foreach (var handJoint in jointPoses)
+            {
+                jointPoses[handJoint.Key] = ConvertJointPose(handJoint.Key, handRootPose, handJoint.Value);
+            }
+        }
+        
+        private MixedRealityPose ConvertJointPose(TrackedHandJoint trackedHandJoint, MixedRealityPose handRootPose, MixedRealityPose jointPose)
+        {
+            var jointTransform = GetProxyTransform(trackedHandJoint);
+
+            if (trackedHandJoint == TrackedHandJoint.Wrist)
+            {
+                jointTransform.localPosition = handRootPose.Position;
+                jointTransform.localRotation = handRootPose.Rotation;
+            }
+            else
+            {
+                jointTransform.parent = cameraRigTransform;
+                jointTransform.localPosition = cameraRigTransform.InverseTransformPoint(cameraRigTransform.position + cameraRigTransform.rotation * jointPose.Position);
+                jointTransform.localRotation = Quaternion.Inverse(cameraRigTransform.rotation) * cameraRigTransform.rotation * jointPose.Rotation;
+                jointTransform.parent = conversionProxyRootTransform;
+            }
+
+            return new MixedRealityPose(
+                conversionProxyRootTransform.InverseTransformPoint(jointTransform.position),
+                Quaternion.Inverse(conversionProxyRootTransform.rotation) * jointTransform.rotation);
+        }
+        
+        private MixedRealityPose GetHandRootPose(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses)
+        {
+            // We use the wrist pose as the hand root pose.
+            var wristPose = jointPoses[TrackedHandJoint.Wrist];
+            var wristProxyTransform = GetProxyTransform(TrackedHandJoint.Wrist);
+
+            // Convert to camera rig's local coordinate space.
+            wristProxyTransform.position = cameraRigTransform.InverseTransformPoint(cameraRigTransform.position + cameraRigTransform.rotation * wristPose.Position);
+            wristProxyTransform.rotation = Quaternion.Inverse(cameraRigTransform.rotation) * cameraRigTransform.rotation * wristPose.Rotation;
+
+            return new MixedRealityPose(wristProxyTransform.position, wristProxyTransform.rotation);
         }
 
         private TrackedHandJoint ConvertToTrackedHandJoint(HandJoint handJoint)
@@ -105,6 +166,33 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                 Debug.Assert(cameraTransform.parent.IsNotNull(), "The camera must be parented.");
                 cameraRigTransform = CameraCache.Main.transform.parent;
             }
+        }
+
+        private Transform GetProxyTransform(TrackedHandJoint handJointKind)
+        {
+            if (conversionProxyRootTransform.IsNull())
+            {
+                conversionProxyRootTransform =
+                    new GameObject($"{nameof(WindowsXRHandJointDataProvider)}.HandJointConversionProxy").transform;
+                conversionProxyRootTransform.transform.SetParent(cameraRigTransform, false);
+                conversionProxyRootTransform.gameObject.SetActive(false);
+            }
+
+            if (handJointKind == TrackedHandJoint.Wrist)
+            {
+                return conversionProxyRootTransform;
+            }
+
+            if (conversionProxyTransforms.ContainsKey(handJointKind))
+            {
+                return conversionProxyTransforms[handJointKind];
+            }
+
+            var transform = new GameObject($"{handJointKind} Proxy").transform;
+            transform.SetParent(cameraRigTransform, false);
+            conversionProxyTransforms.Add(handJointKind, transform);
+
+            return transform;
         }
     }
 }
