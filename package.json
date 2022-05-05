@@ -29,8 +29,8 @@
     "url": "https://github.com/realitycollective"
   },
   "dependencies": {
-    "com.realitytoolkit.core": "1.0.0-preview.1",
-    "com.microsoft.mixedreality.openxr": "1.2.1"
+    "com.realitytoolkit.core": "1.0.0-preview.2",
+    "com.microsoft.mixedreality.openxr": "1.4.0"
   },
   "assets": [
     {
