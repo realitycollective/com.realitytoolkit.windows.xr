@@ -16,9 +16,9 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     /// </summary>
     public sealed class WindowsXRHandMeshDataProvider : IUnityXRHandMeshDataProvider
     {
-        public WindowsXRHandMeshDataProvider(RealityToolkit.Definitions.Utilities.Handedness handedness)
+        public WindowsXRHandMeshDataProvider(Definitions.Utilities.Handedness handedness)
         {
-            handMeshTracker = handedness == RealityToolkit.Definitions.Utilities.Handedness.Left ? HandMeshTracker.Left : HandMeshTracker.Right;
+            handMeshTracker = handedness == Definitions.Utilities.Handedness.Left ? HandMeshTracker.Left : HandMeshTracker.Right;
         }
 
         private readonly HandMeshTracker handMeshTracker;

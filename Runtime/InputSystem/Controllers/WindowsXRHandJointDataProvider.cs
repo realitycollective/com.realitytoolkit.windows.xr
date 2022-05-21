@@ -2,17 +2,17 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.OpenXR;
-using RealityToolkit.Interfaces.InputSystem.Providers.Controllers.Hands;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR;
 using RealityToolkit.Definitions.Controllers.Hands;
 using RealityToolkit.Definitions.Utilities;
 using RealityToolkit.Extensions;
 using RealityToolkit.Interfaces.CameraSystem;
+using RealityToolkit.Interfaces.InputSystem.Providers.Controllers.Hands;
 using RealityToolkit.Services;
 using RealityToolkit.Utilities;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.XR;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 {
@@ -21,7 +21,7 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     /// </summary>
     public sealed class WindowsXRHandJointDataProvider : IUnityXRHandJointDataProvider
     {
-        public WindowsXRHandJointDataProvider(RealityToolkit.Definitions.Utilities.Handedness handedness)
+        public WindowsXRHandJointDataProvider(Definitions.Utilities.Handedness handedness)
         {
             handTracker = handedness == Definitions.Utilities.Handedness.Left
                 ? HandTracker.Left
@@ -67,8 +67,8 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                     jointPoses[ConvertToTrackedHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
                 }
             }
-            
-            ConvertJointPoses(jointPoses, GetHandRootPose(jointPoses));
+         
+            // ConvertJointPoses(jointPoses, GetHandRootPose(jointPoses));
         }
         
         private void ConvertJointPoses(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses, MixedRealityPose handRootPose)
