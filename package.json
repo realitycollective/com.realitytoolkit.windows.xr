@@ -31,7 +31,7 @@
   "dependencies": {
     "com.realitytoolkit.core": "1.0.0-preview.2",
     "com.microsoft.mixedreality.openxr": "1.4.0",
-    "com.realitytoolkit.utilities": "1.0.0-preview.0"
+    "com.realitycollective.utilities": "1.0.0-preview.0"
   },
   "assets": [
     {
