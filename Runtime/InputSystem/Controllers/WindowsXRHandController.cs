@@ -9,6 +9,9 @@ using RealityToolkit.Services.InputSystem.Controllers.UnityXR;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 {
+    /// <summary>
+    /// Hand tracking based controller for the <see cref="WindowsXRPlatform"/> platform.
+    /// </summary>
     [System.Runtime.InteropServices.Guid("dac6f2b1-5375-40ac-a033-7f73f0a39e1d")]
     public class WindowsXRHandController : UnityXRHandController
     {
