@@ -1,13 +1,12 @@
 // Copyright (c) Reality Collective. All rights reserved.
-// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.OpenXR;
+using RealityToolkit.Definitions.Controllers.Hands;
 using RealityToolkit.Interfaces.InputSystem.Providers.Controllers.Hands;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-using RealityToolkit.Definitions.Controllers.Hands;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 {
@@ -16,9 +15,9 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     /// </summary>
     public sealed class WindowsXRHandMeshDataProvider : IUnityXRHandMeshDataProvider
     {
-        public WindowsXRHandMeshDataProvider(Definitions.Utilities.Handedness handedness)
+        public WindowsXRHandMeshDataProvider(RealityCollective.Definitions.Utilities.Handedness handedness)
         {
-            handMeshTracker = handedness == Definitions.Utilities.Handedness.Left ? HandMeshTracker.Left : HandMeshTracker.Right;
+            handMeshTracker = handedness == RealityCollective.Definitions.Utilities.Handedness.Left ? HandMeshTracker.Left : HandMeshTracker.Right;
         }
 
         private readonly HandMeshTracker handMeshTracker;

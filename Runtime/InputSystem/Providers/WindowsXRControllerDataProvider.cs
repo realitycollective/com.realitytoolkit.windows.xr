@@ -1,17 +1,17 @@
 // Copyright (c) Reality Collective. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using RealityCollective.Definitions.Utilities;
+using RealityToolkit.Attributes;
+using RealityToolkit.Definitions.Devices;
+using RealityToolkit.Interfaces.InputSystem;
+using RealityToolkit.Services.InputSystem.Controllers;
 using RealityToolkit.Windows.XR.InputSystem.Controllers;
 using RealityToolkit.Windows.XR.InputSystem.Profiles;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-using RealityToolkit.Attributes;
-using RealityToolkit.Definitions.Devices;
-using RealityToolkit.Definitions.Utilities;
-using RealityToolkit.Interfaces.InputSystem;
-using RealityToolkit.Services.InputSystem.Controllers;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Providers
 {

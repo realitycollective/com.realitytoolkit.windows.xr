@@ -1,9 +1,9 @@
 // Copyright (c) Reality Collective. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using RealityToolkit.Windows.XR.InputSystem.Controllers;
+using RealityCollective.Definitions.Utilities;
 using RealityToolkit.Definitions.Controllers;
-using RealityToolkit.Definitions.Utilities;
+using RealityToolkit.Windows.XR.InputSystem.Controllers;
 
 namespace RealityToolkit.Windows.XR.InputSystem.Profiles
 {

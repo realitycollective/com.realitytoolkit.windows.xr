@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.OpenXR;
+using RealityCollective.Extensions;
 using RealityToolkit.Definitions.Controllers.Hands;
 using RealityToolkit.Definitions.Utilities;
-using RealityToolkit.Extensions;
 using RealityToolkit.Interfaces.CameraSystem;
 using RealityToolkit.Interfaces.InputSystem.Providers.Controllers.Hands;
 using RealityToolkit.Services;
@@ -21,9 +21,9 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
     /// </summary>
     public sealed class WindowsXRHandJointDataProvider : IUnityXRHandJointDataProvider
     {
-        public WindowsXRHandJointDataProvider(Definitions.Utilities.Handedness handedness)
+        public WindowsXRHandJointDataProvider(RealityCollective.Definitions.Utilities.Handedness handedness)
         {
-            handTracker = handedness == Definitions.Utilities.Handedness.Left
+            handTracker = handedness == RealityCollective.Definitions.Utilities.Handedness.Left
                 ? HandTracker.Left
                 : HandTracker.Right;
         }
