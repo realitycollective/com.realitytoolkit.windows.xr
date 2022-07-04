@@ -28,129 +28,70 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                 : HandTracker.Right;
         }
 
-        ~WindowsXRHandJointDataProvider()
-        {
-            if (!conversionProxyRootTransform.IsNull())
-            {
-                conversionProxyTransforms.Clear();
-                conversionProxyRootTransform.Destroy();
-            }
-        }
-
-        private Transform conversionProxyRootTransform;
-
-        private readonly Dictionary<TrackedHandJoint, Transform> conversionProxyTransforms =
-            new Dictionary<TrackedHandJoint, Transform>();
-
         private static readonly HandJoint[] handJoints = Enum.GetValues(typeof(HandJoint)) as HandJoint[];
         private readonly HandTracker handTracker = null;
-        private readonly HandJointLocation[] locations = new HandJointLocation[HandTracker.JointCount];
+        private readonly HandJointLocation[] handJointLocations = new HandJointLocation[HandTracker.JointCount];
         private Transform cameraRigTransform;
 
         /// <inheritdoc />
-        public void UpdateHandJoints(InputDevice inputDevice, Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses)
+        public void UpdateHandJoints(InputDevice inputDevice, Dictionary<XRHandJoint, MixedRealityPose> jointPoses)
         {
             if (cameraRigTransform.IsNull())
             {
                 FindCameraRig();
             }
 
-            if (handTracker != null && handTracker.TryLocateHandJoints(FrameTime.OnUpdate, locations))
+            if (handTracker != null && handTracker.TryLocateHandJoints(FrameTime.OnUpdate, handJointLocations))
             {
                 for (var i = 0; i < handJoints.Length; i++)
                 {
                     var handJoint = handJoints[i];
-                    var handJointLocation = locations[(int)handJoint];
+                    var handJointLocation = handJointLocations[(int)handJoint];
                     var position = cameraRigTransform.TransformPoint(handJointLocation.Pose.position);
                     var rotation = cameraRigTransform.rotation * handJointLocation.Pose.rotation;
 
-                    jointPoses[ConvertToTrackedHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
+                    jointPoses[ConvertToXRHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
                 }
             }
-         
-            // ConvertJointPoses(jointPoses, GetHandRootPose(jointPoses));
-        }
-        
-        private void ConvertJointPoses(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses, MixedRealityPose handRootPose)
-        {
-            foreach (var handJoint in jointPoses)
-            {
-                jointPoses[handJoint.Key] = ConvertJointPose(handJoint.Key, handRootPose, handJoint.Value);
-            }
-        }
-        
-        private MixedRealityPose ConvertJointPose(TrackedHandJoint trackedHandJoint, MixedRealityPose handRootPose, MixedRealityPose jointPose)
-        {
-            var jointTransform = GetProxyTransform(trackedHandJoint);
-
-            if (trackedHandJoint == TrackedHandJoint.Wrist)
-            {
-                jointTransform.localPosition = handRootPose.Position;
-                jointTransform.localRotation = handRootPose.Rotation;
-            }
-            else
-            {
-                jointTransform.parent = cameraRigTransform;
-                jointTransform.localPosition = cameraRigTransform.InverseTransformPoint(cameraRigTransform.position + cameraRigTransform.rotation * jointPose.Position);
-                jointTransform.localRotation = Quaternion.Inverse(cameraRigTransform.rotation) * cameraRigTransform.rotation * jointPose.Rotation;
-                jointTransform.parent = conversionProxyRootTransform;
-            }
-
-            return new MixedRealityPose(
-                conversionProxyRootTransform.InverseTransformPoint(jointTransform.position),
-                Quaternion.Inverse(conversionProxyRootTransform.rotation) * jointTransform.rotation);
-        }
-        
-        private MixedRealityPose GetHandRootPose(Dictionary<TrackedHandJoint, MixedRealityPose> jointPoses)
-        {
-            // We use the wrist pose as the hand root pose.
-            var wristPose = jointPoses[TrackedHandJoint.Wrist];
-            var wristProxyTransform = GetProxyTransform(TrackedHandJoint.Wrist);
-
-            // Convert to camera rig's local coordinate space.
-            wristProxyTransform.position = cameraRigTransform.InverseTransformPoint(cameraRigTransform.position + cameraRigTransform.rotation * wristPose.Position);
-            wristProxyTransform.rotation = Quaternion.Inverse(cameraRigTransform.rotation) * cameraRigTransform.rotation * wristPose.Rotation;
-
-            return new MixedRealityPose(wristProxyTransform.position, wristProxyTransform.rotation);
         }
 
-        private TrackedHandJoint ConvertToTrackedHandJoint(HandJoint handJoint)
+        private XRHandJoint ConvertToXRHandJoint(HandJoint handJoint)
         {
             switch (handJoint)
             {
-                case HandJoint.Palm: return TrackedHandJoint.Palm;
-                case HandJoint.Wrist: return TrackedHandJoint.Wrist;
+                case HandJoint.Palm: return XRHandJoint.Palm;
+                case HandJoint.Wrist: return XRHandJoint.Wrist;
 
-                case HandJoint.ThumbMetacarpal: return TrackedHandJoint.ThumbMetacarpal;
-                case HandJoint.ThumbProximal: return TrackedHandJoint.ThumbProximal;
-                case HandJoint.ThumbDistal: return TrackedHandJoint.ThumbDistal;
-                case HandJoint.ThumbTip: return TrackedHandJoint.ThumbTip;
+                case HandJoint.ThumbMetacarpal: return XRHandJoint.ThumbMetacarpal;
+                case HandJoint.ThumbProximal: return XRHandJoint.ThumbProximal;
+                case HandJoint.ThumbDistal: return XRHandJoint.ThumbDistal;
+                case HandJoint.ThumbTip: return XRHandJoint.ThumbTip;
 
-                case HandJoint.IndexMetacarpal: return TrackedHandJoint.IndexMetacarpal;
-                case HandJoint.IndexProximal: return TrackedHandJoint.IndexProximal;
-                case HandJoint.IndexIntermediate: return TrackedHandJoint.IndexIntermediate;
-                case HandJoint.IndexDistal: return TrackedHandJoint.IndexDistal;
-                case HandJoint.IndexTip: return TrackedHandJoint.IndexTip;
+                case HandJoint.IndexMetacarpal: return XRHandJoint.IndexMetacarpal;
+                case HandJoint.IndexProximal: return XRHandJoint.IndexProximal;
+                case HandJoint.IndexIntermediate: return XRHandJoint.IndexIntermediate;
+                case HandJoint.IndexDistal: return XRHandJoint.IndexDistal;
+                case HandJoint.IndexTip: return XRHandJoint.IndexTip;
 
-                case HandJoint.MiddleMetacarpal: return TrackedHandJoint.MiddleMetacarpal;
-                case HandJoint.MiddleProximal: return TrackedHandJoint.MiddleProximal;
-                case HandJoint.MiddleIntermediate: return TrackedHandJoint.MiddleIntermediate;
-                case HandJoint.MiddleDistal: return TrackedHandJoint.MiddleDistal;
-                case HandJoint.MiddleTip: return TrackedHandJoint.MiddleTip;
+                case HandJoint.MiddleMetacarpal: return XRHandJoint.MiddleMetacarpal;
+                case HandJoint.MiddleProximal: return XRHandJoint.MiddleProximal;
+                case HandJoint.MiddleIntermediate: return XRHandJoint.MiddleIntermediate;
+                case HandJoint.MiddleDistal: return XRHandJoint.MiddleDistal;
+                case HandJoint.MiddleTip: return XRHandJoint.MiddleTip;
 
-                case HandJoint.RingMetacarpal: return TrackedHandJoint.RingMetacarpal;
-                case HandJoint.RingProximal: return TrackedHandJoint.RingProximal;
-                case HandJoint.RingIntermediate: return TrackedHandJoint.RingIntermediate;
-                case HandJoint.RingDistal: return TrackedHandJoint.RingDistal;
-                case HandJoint.RingTip: return TrackedHandJoint.RingTip;
+                case HandJoint.RingMetacarpal: return XRHandJoint.RingMetacarpal;
+                case HandJoint.RingProximal: return XRHandJoint.RingProximal;
+                case HandJoint.RingIntermediate: return XRHandJoint.RingIntermediate;
+                case HandJoint.RingDistal: return XRHandJoint.RingDistal;
+                case HandJoint.RingTip: return XRHandJoint.RingTip;
 
-                case HandJoint.LittleMetacarpal: return TrackedHandJoint.LittleMetacarpal;
-                case HandJoint.LittleProximal: return TrackedHandJoint.LittleProximal;
-                case HandJoint.LittleIntermediate: return TrackedHandJoint.LittleIntermediate;
-                case HandJoint.LittleDistal: return TrackedHandJoint.LittleDistal;
-                case HandJoint.LittleTip: return TrackedHandJoint.LittleTip;
+                case HandJoint.LittleMetacarpal: return XRHandJoint.LittleMetacarpal;
+                case HandJoint.LittleProximal: return XRHandJoint.LittleProximal;
+                case HandJoint.LittleIntermediate: return XRHandJoint.LittleIntermediate;
+                case HandJoint.LittleDistal: return XRHandJoint.LittleDistal;
+                case HandJoint.LittleTip: return XRHandJoint.LittleTip;
 
-                default: return TrackedHandJoint.None;
+                default: return XRHandJoint.Unknown;
             }
         }
 
@@ -166,33 +107,6 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                 Debug.Assert(cameraTransform.parent.IsNotNull(), "The camera must be parented.");
                 cameraRigTransform = CameraCache.Main.transform.parent;
             }
-        }
-
-        private Transform GetProxyTransform(TrackedHandJoint handJointKind)
-        {
-            if (conversionProxyRootTransform.IsNull())
-            {
-                conversionProxyRootTransform =
-                    new GameObject($"{nameof(WindowsXRHandJointDataProvider)}.HandJointConversionProxy").transform;
-                conversionProxyRootTransform.transform.SetParent(cameraRigTransform, false);
-                conversionProxyRootTransform.gameObject.SetActive(false);
-            }
-
-            if (handJointKind == TrackedHandJoint.Wrist)
-            {
-                return conversionProxyRootTransform;
-            }
-
-            if (conversionProxyTransforms.ContainsKey(handJointKind))
-            {
-                return conversionProxyTransforms[handJointKind];
-            }
-
-            var transform = new GameObject($"{handJointKind} Proxy").transform;
-            transform.SetParent(cameraRigTransform, false);
-            conversionProxyTransforms.Add(handJointKind, transform);
-
-            return transform;
         }
     }
 }

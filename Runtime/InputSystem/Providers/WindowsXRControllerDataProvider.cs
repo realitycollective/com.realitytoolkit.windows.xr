@@ -116,6 +116,10 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
                 controllerType = typeof(WindowsXRHandController);
                 return true;
             }
+            if ((inputDevice.characteristics & InputDeviceCharacteristics.HeldInHand) != 0)
+            {
+                // TODO: Implement support for WMR controllers.
+            }
 
             controllerType = null;
             return false;
