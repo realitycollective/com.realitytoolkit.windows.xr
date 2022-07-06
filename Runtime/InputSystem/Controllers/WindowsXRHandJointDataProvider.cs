@@ -8,7 +8,6 @@ using RealityToolkit.Definitions.Utilities;
 using RealityToolkit.Interfaces.CameraSystem;
 using RealityToolkit.Interfaces.InputSystem.Providers.Controllers.Hands;
 using RealityToolkit.Services;
-using RealityToolkit.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,12 +30,12 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
         private static readonly HandJoint[] handJoints = Enum.GetValues(typeof(HandJoint)) as HandJoint[];
         private readonly HandTracker handTracker = null;
         private readonly HandJointLocation[] handJointLocations = new HandJointLocation[HandTracker.JointCount];
-        private Transform cameraRigTransform;
+        private IMixedRealityCameraRig cameraRig;
 
         /// <inheritdoc />
-        public void UpdateHandJoints(InputDevice inputDevice, Dictionary<XRHandJoint, MixedRealityPose> jointPoses)
+        public void UpdateHandJoints(InputDevice inputDevice, ref MixedRealityPose[] jointPoses, ref Dictionary<XRHandJoint, MixedRealityPose> jointPosesDictionary)
         {
-            if (cameraRigTransform.IsNull())
+            if (cameraRig == null)
             {
                 FindCameraRig();
             }
@@ -47,10 +46,10 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                 {
                     var handJoint = handJoints[i];
                     var handJointLocation = handJointLocations[(int)handJoint];
-                    var position = cameraRigTransform.TransformPoint(handJointLocation.Pose.position);
-                    var rotation = cameraRigTransform.rotation * handJointLocation.Pose.rotation;
+                    var position = handJointLocation.Pose.position;
+                    var rotation = handJointLocation.Pose.rotation;
 
-                    jointPoses[ConvertToXRHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
+                    jointPosesDictionary[ConvertToXRHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
                 }
             }
         }
@@ -97,16 +96,13 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
 
         private void FindCameraRig()
         {
-            if (MixedRealityToolkit.TryGetService<IMixedRealityCameraSystem>(out var cameraSystem))
+            if (!MixedRealityToolkit.TryGetService<IMixedRealityCameraSystem>(out var cameraSystem))
             {
-                cameraRigTransform = cameraSystem.MainCameraRig.RigTransform;
+                Debug.LogError($"{nameof(WindowsXRHandJointDataProvider)} needs the {nameof(IMixedRealityCameraSystem)} to work.");
+                return;
             }
-            else
-            {
-                var cameraTransform = CameraCache.Main.transform;
-                Debug.Assert(cameraTransform.parent.IsNotNull(), "The camera must be parented.");
-                cameraRigTransform = CameraCache.Main.transform.parent;
-            }
+
+            cameraRig = cameraSystem.MainCameraRig;
         }
     }
 }

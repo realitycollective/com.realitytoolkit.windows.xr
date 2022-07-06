@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LeftWindowsXRHandControllerVisualizer
   m_EditorClassIdentifier: 
   controllerVisualizationType:
-    reference: ea41f336-8b46-4aea-a8b4-8b93b52e67a9
+    reference: f6654aca-e4c2-4653-8033-1465fe9f2fd1
   useDefaultModels: 0
   model: {fileID: 4766928998494242141, guid: d3375c8adeeff774f9a4e74e8be2c5e4, type: 3}
   pointerPose:
