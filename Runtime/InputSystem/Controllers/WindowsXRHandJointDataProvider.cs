@@ -49,7 +49,10 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
                     var position = handJointLocation.Pose.position;
                     var rotation = handJointLocation.Pose.rotation;
 
-                    jointPosesDictionary[ConvertToXRHandJoint(handJoint)] = new MixedRealityPose(position, rotation);
+                    var xrHandJoint = ConvertToXRHandJoint(handJoint);
+                    var pose = new MixedRealityPose(position, rotation);
+                    jointPosesDictionary[xrHandJoint] = pose;
+                    jointPoses[(int)xrHandJoint] = pose;
                 }
             }
         }
