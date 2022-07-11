@@ -4,6 +4,7 @@
 using RealityCollective.Definitions.Utilities;
 using RealityToolkit.Definitions.Controllers;
 using RealityToolkit.Definitions.Devices;
+using RealityToolkit.Definitions.Utilities;
 using RealityToolkit.Interfaces.InputSystem.Providers.Controllers;
 using RealityToolkit.Services.InputSystem.Controllers.UnityXR;
 
@@ -24,6 +25,24 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
         {
             handJointDataProvider = new WindowsXRHandJointDataProvider(controllerHandedness);
             handMeshDataProvider = new WindowsXRHandMeshDataProvider(controllerHandedness);
+        }
+
+        /// <inheritdoc />
+        protected override void UpdateSpatialPointerPose()
+        {
+            var position = SpatialPointerPose.Position;
+            if (InputDevice.TryGetFeatureValue(WindowsXRInputFeatureUsages.PointerPosition, out var pointerPosition))
+            {
+                position = cameraRigTransform.TransformPoint(pointerPosition);
+            }
+
+            var rotation = SpatialPointerPose.Rotation;
+            if (InputDevice.TryGetFeatureValue(WindowsXRInputFeatureUsages.PointerRotation, out var pointerRotation))
+            {
+                rotation = cameraRigTransform.rotation * pointerRotation;
+            }
+
+            SpatialPointerPose = new MixedRealityPose(position, rotation);
         }
     }
 }
