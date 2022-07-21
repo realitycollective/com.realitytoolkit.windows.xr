@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da64fb88269149f8a95f1fb969d6a0b4, type: 3}
+  m_Name: WindowsXRPlatformServiceConfigurationsProfile
+  m_EditorClassIdentifier: 
+  platformEntries:
+    runtimePlatforms:
+    - reference: 575619ae-25e7-4f73-af33-c1604e1dd858
+    - reference: c838c4f5-a87e-48c7-8742-09a4d85fc3bc
+  configurations:
+  - instancedType:
+      reference: b332b5fb-c7ed-4348-9261-ad563eb621c6
+    name: WindowsXR Camera Data Provider
+    priority: 0
+    platformEntries:
+      runtimePlatforms:
+      - reference: 575619ae-25e7-4f73-af33-c1604e1dd858
+      - reference: c838c4f5-a87e-48c7-8742-09a4d85fc3bc
+    profile: {fileID: 11400000, guid: 1800d99a7efe62344825f48e690fcdb1, type: 2}
+  - instancedType:
+      reference: 80764933-e115-4d1e-beda-26383c32c327
+    name: WindowsXR Controller Data Provider
+    priority: 1
+    platformEntries:
+      runtimePlatforms:
+      - reference: 575619ae-25e7-4f73-af33-c1604e1dd858
+      - reference: c838c4f5-a87e-48c7-8742-09a4d85fc3bc
+    profile: {fileID: 11400000, guid: 3c059e07440748d4d872c6ef21cd8877, type: 2}
