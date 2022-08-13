@@ -5,11 +5,13 @@ using RealityCollective.Definitions.Utilities;
 using RealityToolkit.Attributes;
 using RealityToolkit.Definitions.Devices;
 using RealityToolkit.Interfaces.InputSystem;
+using RealityToolkit.Interfaces.InputSystem.Controllers;
 using RealityToolkit.Services.InputSystem.Controllers;
 using RealityToolkit.Windows.XR.InputSystem.Controllers;
 using RealityToolkit.Windows.XR.InputSystem.Profiles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -27,6 +29,9 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
             : base(name, priority, profile, parentService) { }
 
         private readonly Dictionary<Handedness, WindowsXRHandController> activeControllers = new Dictionary<Handedness, WindowsXRHandController>();
+
+        /// <inheritdoc />
+        public override IReadOnlyList<IMixedRealityController> ActiveControllers => activeControllers.Values.ToList();
 
         /// <inheritdoc />
         public override void Update()
@@ -94,7 +99,6 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
             {
                 controller = (WindowsXRHandController)Activator.CreateInstance(controllerType, this, TrackingState.NotTracked, handedness, GetControllerMappingProfile(controllerType, handedness));
                 controller.TryRenderControllerModel();
-                AddController(controller);
                 activeControllers.Add(handedness, controller);
                 InputSystem?.RaiseSourceDetected(controller.InputSource, controller);
 
@@ -133,7 +137,6 @@ namespace RealityToolkit.Windows.XR.InputSystem.Providers
 
                 if (removeFromRegistry)
                 {
-                    RemoveController(controller);
                     activeControllers.Remove(handedness);
                 }
             }
