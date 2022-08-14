@@ -33,13 +33,13 @@ namespace RealityToolkit.Windows.XR.InputSystem.Controllers
             var position = SpatialPointerPose.Position;
             if (InputDevice.TryGetFeatureValue(WindowsXRInputFeatureUsages.PointerPosition, out var pointerPosition))
             {
-                position = cameraRigTransform.TransformPoint(pointerPosition);
+                position = cameraRig.RigTransform.TransformPoint(pointerPosition);
             }
 
             var rotation = SpatialPointerPose.Rotation;
             if (InputDevice.TryGetFeatureValue(WindowsXRInputFeatureUsages.PointerRotation, out var pointerRotation))
             {
-                rotation = cameraRigTransform.rotation * pointerRotation;
+                rotation = cameraRig.RigTransform.rotation * pointerRotation;
             }
 
             SpatialPointerPose = new MixedRealityPose(position, rotation);
