@@ -12,7 +12,7 @@
     "unity",
     "windows"
   ],
-  "version": "1.0.0-preview.1",
+  "version": "1.0.0-pre-release.1",
   "unity": "2020.3",
   "homepage": "https://github.com/realitycollective",
   "bugs": {
@@ -29,9 +29,8 @@
     "url": "https://github.com/realitycollective"
   },
   "dependencies": {
-    "com.realitytoolkit.core": "1.0.0-preview.5",
-    "com.microsoft.mixedreality.openxr": "1.4.2",
-    "com.realitycollective.utilities": "1.0.0-preview.3"
+    "com.realitytoolkit.core": "1.0.0-pre-release.19",
+    "com.microsoft.mixedreality.openxr": "1.4.2"
   },
   "assets": [
     {
